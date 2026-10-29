@@ -1,20 +1,19 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CATALOGUE N-LAB — Каталог разработок и идей</title>
-    <!-- Подключаем скетчевые шрифты -->
     <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #FAF8F5;
-            --card-bg: #FFFDF9;
+            --bg-color: #F4EEDB; /* Более теплый, скетчевый желтоватый оттенок бумаги */
+            --card-bg: #FFFDF4;
             --text-color: #1A1A1A;
             --border-color: #1A1A1A;
             --accent-yellow: #FFD400;
-            --shadow: 4px 4px 0px #1A1A1A;
-            --shadow-hover: 6px 6px 0px #1A1A1A;
+            --shadow: 4px 5px 0px #1A1A1A;
+            --shadow-hover: 6px 7px 0px #1A1A1A;
             --font-main: 'Patrick Hand', cursive, sans-serif;
             --font-title: 'Architects Daughter', cursive, sans-serif;
         }
@@ -29,8 +28,8 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: var(--font-main);
-            font-size: 18px;
-            padding: 20px;
+            font-size: 19px;
+            padding: 25px;
         }
 
         .container {
@@ -43,7 +42,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             flex-wrap: wrap;
             gap: 20px;
             border-bottom: 3px dashed var(--border-color);
@@ -51,61 +50,64 @@
         }
 
         .logo-container {
-            display: flex;
-            align-items: center;
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: bold;
+            transform: rotate(-1deg);
         }
 
-        .logo-img {
-            max-height: 85px;
-            width: auto;
-            object-fit: contain;
-            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.15));
+        .logo-container span {
+            color: #D4AC0D;
         }
 
-        /* Навигация / Фильтры (слегка неровные рамки) */
+        /* Навигация / Фильтры с сильной неровностью */
         .nav-filters {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
         .filter-btn {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
+            border: 3px solid var(--border-color);
             padding: 8px 16px;
             font-family: var(--font-main);
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 2px 2px 0px var(--border-color);
+            box-shadow: 3px 3px 0px var(--border-color);
             transition: all 0.1s ease;
-            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; /* Эффект ручного скетча */
+            border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
+            transform: rotate(1deg);
+        }
+
+        .filter-btn:nth-child(even) {
+            transform: rotate(-1.5deg);
         }
 
         .filter-btn:hover {
-            transform: translate(-1px, -1px);
-            box-shadow: 3px 3px 0px var(--border-color);
+            transform: translate(-2px, -2px) rotate(0deg);
+            box-shadow: 5px 5px 0px var(--border-color);
         }
 
         .filter-btn.active {
             background-color: var(--accent-yellow);
-            transform: translate(1px, 1px);
-            box-shadow: 1px 1px 0px var(--border-color);
         }
 
-        /* Баннер-приветствие с «живыми» скруглениями */
+        /* Баннер-приветствие */
         .welcome-banner {
             background-color: var(--card-bg);
             border: 3px solid var(--border-color);
             box-shadow: var(--shadow);
             padding: 25px;
             margin-bottom: 40px;
-            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            border-radius: 235px 25px 205px 35px / 35px 205px 25px 235px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
+            transform: rotate(-0.5deg);
         }
 
         .welcome-text h1 {
@@ -116,13 +118,13 @@
 
         .add-btn {
             background-color: #A3E4D7;
-            border: 2px solid var(--border-color);
+            border: 3px solid var(--border-color);
             padding: 10px 20px;
             font-family: var(--font-main);
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 2px 2px 0px var(--border-color);
+            box-shadow: 3px 3px 0px var(--border-color);
             border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
             transition: 0.1s;
         }
@@ -130,33 +132,34 @@
         .add-btn:hover {
             background-color: #76D7C4;
             transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0px var(--border-color);
+            box-shadow: 5px 5px 0px var(--border-color);
         }
 
         /* Сетка проектов */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
+            gap: 35px;
             margin-bottom: 50px;
         }
 
-        /* Карточка с «кривыми», живыми краями */
+        /* Скетч-карточка с кривыми краями и легким наклоном */
         .card {
             background-color: var(--card-bg);
             border: 3px solid var(--border-color);
             border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
             box-shadow: var(--shadow);
-            padding: 20px;
+            padding: 22px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transform: rotate(0.8deg);
         }
 
         .card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-5px) rotate(0deg);
             box-shadow: var(--shadow-hover);
         }
 
@@ -180,24 +183,23 @@
             font-size: 24px;
             background: var(--card-bg);
             border: 2px solid var(--border-color);
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
             box-shadow: 2px 2px 0px var(--border-color);
         }
 
         .card-title {
             font-family: var(--font-title);
-            font-size: 22px;
+            font-size: 24px;
             margin-bottom: 10px;
-            letter-spacing: 0.5px;
         }
 
         .card-desc {
-            font-size: 16px;
+            font-size: 17px;
             color: #333;
             margin-bottom: 20px;
             line-height: 1.4;
@@ -207,29 +209,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 2px dashed #ccc;
+            border-top: 2px dashed #999;
             padding-top: 12px;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .card-date {
-            color: #666;
+            color: #555;
         }
 
         .card-link-btn {
             font-weight: bold;
             color: #000;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
         .card-link-btn:hover {
             text-decoration: underline;
         }
 
-        /* Подвал сайта */
+        /* Подвал как в первой версии (без смайликов) */
         footer {
             text-align: center;
             border-top: 3px dashed var(--border-color);
@@ -237,7 +236,7 @@
             margin-top: 40px;
             font-family: var(--font-title);
             font-size: 18px;
-            color: #333;
+            color: #222;
         }
 
         /* Модальное окно */
@@ -297,10 +296,10 @@
         }
 
         .modal-preview-box {
-            background: #F4F1EA;
+            background: #EFE8D6;
             border: 2px dashed var(--border-color);
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -318,8 +317,7 @@
         <!-- Шапка -->
         <header>
             <div class="logo-container">
-                <!-- Вставлен фирменный скетч-логотип -->
-                <img src="https://images.usercontent.com/watermarked_img_4761416940493926475.jpg" alt="CATALOGUE N-LAB" class="logo-img">
+                CATALOGUE <span>N-LAB</span>
             </div>
             
             <div class="nav-filters">
@@ -335,12 +333,12 @@
         <div class="welcome-banner">
             <div class="welcome-text">
                 <h1>Лаборатория идей и разработок 🧪✨</h1>
-                <p>Добро пожаловать в мой интерактивный каталог! Здесь собраны пет-проекты, алгоритмы, игры, учебные материалы и полезные утилиты.</p>
+                <p>Добро пожаловать в мой интерактивный каталог! Здесь собраны пет-проекты, алгоритмы, игры и учебные материалы.</p>
             </div>
             <button class="add-btn" onclick="openAddModal()">+ Добавить идею</button>
         </div>
 
-        <!-- Сетка проектов (оставили только MAP FOUNDER, как просил) -->
+        <!-- Сетка проектов (оставлен только Map Founder) -->
         <div class="projects-grid" id="projectsGrid">
             <div class="card" data-category="technologie" onclick="openModal('Map Founder', 'Интерактивный поисковик кратчайших путей и лабиринтов на графах с визуализацией шагов алгоритма Дейкстры и A*.\n\nПроект создан для исследования производительности алгоритмов поиска пути на веб-технологиях.', 'Окт 2026', 'https://github.com')">
                 <div>
@@ -358,13 +356,13 @@
             </div>
         </div>
 
-        <!-- Подвал с надписью -->
+        <!-- Подвал как в первой версии без смайликов -->
         <footer>
-            Сделано с вдохновением и капелькой юмора ✨
+            Сделано с вдохновением и капелькой юмора
         </footer>
     </div>
 
-    <!-- Модальное окно с деталями -->
+    <!-- Модальное окно -->
     <div class="modal" id="projectModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal()">&times;</button>
@@ -377,7 +375,7 @@
                 <div class="modal-preview-box">
                     <div style="font-size: 40px; margin-bottom: 10px;">🗺️</div>
                     <div>MAP FOUNDER SCHEMA</div>
-                    <div style="font-size: 14px; color: #666; font-weight: normal; margin-top: 5px;">Более подробная схема или график работы пути</div>
+                    <div style="font-size: 14px; color: #555; font-weight: normal; margin-top: 5px;">Более подробная схема или график работы пути</div>
                 </div>
             </div>
         </div>
@@ -388,7 +386,6 @@
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            // Карточка у нас пока одна, логика фильтрации сохранена на будущее
         }
 
         function openModal(title, desc, date, link) {
