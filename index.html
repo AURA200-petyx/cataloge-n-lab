@@ -42,7 +42,7 @@
             margin: 0 auto;
         }
 
-        /* Шапка сайта */
+        /* Улучшенная шапка сайта */
         header {
             display: flex;
             justify-content: space-between;
@@ -51,7 +51,7 @@
             flex-wrap: wrap;
             gap: 20px;
             border-bottom: 3px dashed var(--border-color);
-            padding-bottom: 20px;
+            padding-bottom: 22px;
         }
 
         .logo-container {
@@ -59,18 +59,18 @@
             align-items: center;
         }
 
-        /* Настройка логотипа из файла logo.png */
+        /* Увеличили размер логотипа для идеальной читаемости */
         .logo-img {
-            height: 75px;
+            height: 95px;
             width: auto;
             object-fit: contain;
-            mix-blend-mode: multiply; /* Сливает легкий оттенок фона с бумагой сайта */
+            mix-blend-mode: multiply;
             transform: rotate(-1.5deg);
             transition: transform 0.2s ease;
         }
 
         .logo-img:hover {
-            transform: rotate(0deg) scale(1.02);
+            transform: rotate(0deg) scale(1.03);
         }
 
         /* Навигация / Фильтры */
@@ -78,6 +78,7 @@
             display: flex;
             gap: 14px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .filter-btn {
@@ -329,7 +330,6 @@
         <!-- Шапка -->
         <header>
             <div class="logo-container">
-                <!-- Вставляем твой реальный скетч-логотип -->
                 <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img">
             </div>
             
