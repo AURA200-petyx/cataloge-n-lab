@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #F4EEDB; /* Более теплый, скетчевый желтоватый оттенок бумаги */
+            --bg-color: #F4EEDB;
             --card-bg: #FFFDF4;
             --text-color: #1A1A1A;
             --border-color: #1A1A1A;
@@ -50,17 +50,19 @@
         }
 
         .logo-container {
-            font-family: var(--font-title);
-            font-size: 32px;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            max-height: 90px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
             transform: rotate(-1deg);
         }
 
-        .logo-container span {
-            color: #D4AC0D;
-        }
-
-        /* Навигация / Фильтры с сильной неровностью */
+        /* Навигация / Фильтры */
         .nav-filters {
             display: flex;
             gap: 14px;
@@ -143,7 +145,6 @@
             margin-bottom: 50px;
         }
 
-        /* Скетч-карточка с кривыми краями и легким наклоном */
         .card {
             background-color: var(--card-bg);
             border: 3px solid var(--border-color);
@@ -228,14 +229,14 @@
             text-decoration: underline;
         }
 
-        /* Подвал как в первой версии (без смайликов) */
+        /* Фирменный футер */
         footer {
             text-align: center;
             border-top: 3px dashed var(--border-color);
             padding: 25px 0;
             margin-top: 40px;
             font-family: var(--font-title);
-            font-size: 18px;
+            font-size: 17px;
             color: #222;
         }
 
@@ -317,7 +318,8 @@
         <!-- Шапка -->
         <header>
             <div class="logo-container">
-                CATALOGUE <span>N-LAB</span>
+                <!-- Вставляем твой скетч-логотип из файла logo.png -->
+                <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img">
             </div>
             
             <div class="nav-filters">
@@ -338,7 +340,7 @@
             <button class="add-btn" onclick="openAddModal()">+ Добавить идею</button>
         </div>
 
-        <!-- Сетка проектов (оставлен только Map Founder) -->
+        <!-- Сетка проектов -->
         <div class="projects-grid" id="projectsGrid">
             <div class="card" data-category="technologie" onclick="openModal('Map Founder', 'Интерактивный поисковик кратчайших путей и лабиринтов на графах с визуализацией шагов алгоритма Дейкстры и A*.\n\nПроект создан для исследования производительности алгоритмов поиска пути на веб-технологиях.', 'Окт 2026', 'https://github.com')">
                 <div>
@@ -356,9 +358,9 @@
             </div>
         </div>
 
-        <!-- Подвал как в первой версии без смайликов -->
+        <!-- Футер с нужной надписью -->
         <footer>
-            Сделано с вдохновением и капелькой юмора
+            CATALOGUE N-LAB © 2026 • Сделано с вдохновением и капелькой юмора
         </footer>
     </div>
 
