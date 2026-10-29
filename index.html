@@ -52,14 +52,19 @@
         .logo-container {
             display: flex;
             align-items: center;
+            background-color: #F4EEDB;
+            padding: 2px 8px;
+            border-radius: 8px;
         }
 
+        /* Убираем лишние поля у картинки и подгоняем под цвет сайта */
         .logo-img {
-            max-height: 90px;
+            height: 65px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
-            transform: rotate(-1deg);
+            /* Смешивание multiply убирает белый фон картинки, делая его прозрачным под цвет сайта */
+            mix-blend-mode: multiply; 
+            transform: rotate(-1.5deg);
         }
 
         /* Навигация / Фильтры */
@@ -229,7 +234,7 @@
             text-decoration: underline;
         }
 
-        /* Фирменный футер */
+        /* Футер */
         footer {
             text-align: center;
             border-top: 3px dashed var(--border-color);
@@ -318,7 +323,7 @@
         <!-- Шапка -->
         <header>
             <div class="logo-container">
-                <!-- Вставляем твой скетч-логотип из файла logo.png -->
+                <!-- Картинка логотипа с обвязкой под фон сайта -->
                 <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img">
             </div>
             
@@ -358,7 +363,7 @@
             </div>
         </div>
 
-        <!-- Футер с нужной надписью -->
+        <!-- Футер -->
         <footer>
             CATALOGUE N-LAB © 2026 • Сделано с вдохновением и капелькой юмора
         </footer>
