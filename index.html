@@ -42,49 +42,48 @@
             margin: 0 auto;
         }
 
-        /* Улучшенная шапка сайта */
+        /* Шапка по твоему макету: крупный логотип сверху, фильтры снизу, без пунктиров */
         header {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 35px;
-            flex-wrap: wrap;
-            gap: 20px;
-            border-bottom: 3px dashed var(--border-color);
-            padding-bottom: 22px;
+            margin-bottom: 40px;
+            gap: 25px;
+            padding-bottom: 10px;
         }
 
         .logo-container {
             display: flex;
+            justify-content: center;
             align-items: center;
         }
 
-        /* Увеличили размер логотипа для идеальной читаемости */
+        /* Большой и красивый логотип */
         .logo-img {
-            height: 95px;
+            height: 130px;
             width: auto;
             object-fit: contain;
             mix-blend-mode: multiply;
-            transform: rotate(-1.5deg);
+            transform: rotate(-1deg);
             transition: transform 0.2s ease;
         }
 
         .logo-img:hover {
-            transform: rotate(0deg) scale(1.03);
+            transform: rotate(0deg) scale(1.02);
         }
 
-        /* Навигация / Фильтры */
+        /* Навигация / Фильтры в строку по центру */
         .nav-filters {
             display: flex;
             gap: 14px;
             flex-wrap: wrap;
-            align-items: center;
+            justify-content: center;
         }
 
         .filter-btn {
             background-color: var(--card-bg);
             border: 3px solid var(--border-color);
-            padding: 8px 16px;
+            padding: 8px 18px;
             font-family: var(--font-main);
             font-size: 17px;
             font-weight: bold;
@@ -241,15 +240,14 @@
             text-decoration: underline;
         }
 
-        /* Футер */
+        /* Компактный футер внизу без пунктиров */
         footer {
             text-align: center;
-            border-top: 3px dashed var(--border-color);
-            padding: 25px 0;
+            padding: 20px 0;
             margin-top: 40px;
             font-family: var(--font-title);
-            font-size: 17px;
-            color: #222;
+            font-size: 14px;
+            color: #555;
         }
 
         /* Модальное окно */
@@ -327,7 +325,7 @@
 <body>
 
     <div class="container">
-        <!-- Шапка -->
+        <!-- Шапка по твоему макету -->
         <header>
             <div class="logo-container">
                 <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img">
@@ -369,7 +367,7 @@
             </div>
         </div>
 
-        <!-- Футер -->
+        <!-- Компактный футер в самом низу -->
         <footer>
             CATALOGUE N-LAB © 2026 • Сделано с вдохновением и капелькой юмора
         </footer>
