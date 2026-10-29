@@ -54,69 +54,23 @@
             padding-bottom: 20px;
         }
 
-        /* Логотип, собранный чисто на CSS в скетч-стиле */
-        .pure-sketch-logo {
+        .logo-container {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-family: var(--font-title);
-            font-weight: bold;
-            font-size: 28px;
-            letter-spacing: 1px;
+        }
+
+        /* Настройка логотипа из файла logo.png */
+        .logo-img {
+            height: 75px;
+            width: auto;
+            object-fit: contain;
+            mix-blend-mode: multiply; /* Сливает легкий оттенок фона с бумагой сайта */
             transform: rotate(-1.5deg);
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            padding: 6px 14px;
-            box-shadow: 3px 3px 0px var(--border-color);
-            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-            user-select: none;
+            transition: transform 0.2s ease;
         }
 
-        .logo-cat {
-            color: var(--text-color);
-            text-transform: uppercase;
-        }
-
-        .logo-nlab-group {
-            display: flex;
-            align-items: center;
-            color: #D4AC0D; /* Насыщенный желто-горчичный цвет как на наброске */
-            text-shadow: 1px 1px 0px #1A1A1A;
-        }
-
-        /* Смайлик с потекшей улыбкой */
-        .sketchy-smiley {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            margin: 0 4px;
-            font-size: 16px;
-            line-height: 1;
-            transform: translateY(-2px);
-        }
-
-        .smiley-face {
-            background-color: var(--accent-yellow);
-            border: 2px solid var(--border-color);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            font-weight: bold;
-            box-shadow: 1px 1px 0px var(--border-color);
-        }
-
-        .smiley-drips {
-            position: absolute;
-            top: 20px;
-            font-size: 12px;
-            color: var(--border-color);
-            font-weight: bold;
-            letter-spacing: -2px;
+        .logo-img:hover {
+            transform: rotate(0deg) scale(1.02);
         }
 
         /* Навигация / Фильтры */
@@ -374,17 +328,9 @@
     <div class="container">
         <!-- Шапка -->
         <header>
-            <!-- Чистый скетч-логотип прямо в коде -->
-            <div class="pure-sketch-logo">
-                <span class="logo-cat">CATALOGE</span>
-                <div class="logo-nlab-group">
-                    <span>N-</span>
-                    <div class="sketchy-smiley">
-                        <div class="smiley-face">⚡⚡</div>
-                        <div class="smiley-drips">💧💧</div>
-                    </div>
-                    <span>LAB</span>
-                </div>
+            <div class="logo-container">
+                <!-- Вставляем твой реальный скетч-логотип -->
+                <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img">
             </div>
             
             <div class="nav-filters">
