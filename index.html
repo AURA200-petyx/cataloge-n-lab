@@ -16,6 +16,8 @@
             --shadow-hover: 6px 7px 0px #1A1A1A;
             --font-main: 'Patrick Hand', cursive, sans-serif;
             --font-title: 'Architects Daughter', cursive, sans-serif;
+            --sketch-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
+            --sketch-radius-sm: 255px 15px 225px 15px / 15px 225px 15px 255px;
         }
 
         * {
@@ -35,14 +37,19 @@
             font-family: var(--font-main);
             font-size: 19px;
             padding: 25px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
+            flex: 1;
         }
 
-        /* Шапка с крупным логотипом и фильтрами снизу */
+        /* Шапка */
         header {
             display: flex;
             flex-direction: column;
@@ -57,7 +64,6 @@
             align-items: center;
         }
 
-        /* Максимально крупный и выразительный логотип */
         .logo-img {
             max-height: 210px;
             width: auto;
@@ -71,7 +77,7 @@
             transform: rotate(0deg) scale(1.02);
         }
 
-        /* Навигация / Фильтры */
+        /* Фильтры */
         .nav-filters {
             display: flex;
             gap: 14px;
@@ -88,8 +94,8 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 3px 3px 0px var(--border-color);
-            transition: all 0.1s ease;
-            border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
+            border-radius: var(--sketch-radius);
             transform: rotate(1deg);
         }
 
@@ -137,8 +143,8 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 3px 3px 0px var(--border-color);
-            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-            transition: 0.1s;
+            border-radius: var(--sketch-radius-sm);
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
         }
 
         .add-btn:hover {
@@ -155,18 +161,34 @@
             margin-bottom: 50px;
         }
 
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            background-color: rgba(255, 253, 244, 0.7);
+            border: 3px dashed #888;
+            border-radius: var(--sketch-radius);
+            padding: 45px 20px;
+            color: #444;
+            font-size: 22px;
+        }
+
         .card {
             background-color: var(--card-bg);
             border: 3px solid var(--border-color);
-            border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
+            border-radius: var(--sketch-radius);
             box-shadow: var(--shadow);
             padding: 22px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transform: rotate(0.8deg);
+            position: relative;
+        }
+
+        .card:nth-child(even) {
+            transform: rotate(-0.7deg);
         }
 
         .card:hover {
@@ -187,7 +209,7 @@
             padding: 4px 10px;
             font-size: 14px;
             font-weight: bold;
-            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            border-radius: var(--sketch-radius-sm);
         }
 
         .card-icon {
@@ -199,7 +221,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            border-radius: var(--sketch-radius-sm);
             box-shadow: 2px 2px 0px var(--border-color);
         }
 
@@ -207,6 +229,8 @@
             font-family: var(--font-title);
             font-size: 24px;
             margin-bottom: 10px;
+            text-transform: uppercase;
+            word-break: break-word;
         }
 
         .card-desc {
@@ -214,6 +238,7 @@
             color: #333;
             margin-bottom: 20px;
             line-height: 1.4;
+            word-break: break-word;
         }
 
         .card-footer {
@@ -232,32 +257,59 @@
         .card-link-btn {
             font-weight: bold;
             color: #000;
-            text-decoration: none;
         }
 
-        .card-link-btn:hover {
+        .card:hover .card-link-btn {
             text-decoration: underline;
         }
 
-        /* Компактный футер в самом низу */
+        /* Кнопка удаления */
+        .delete-card-btn {
+            position: absolute;
+            top: -12px;
+            right: -10px;
+            background: #FF6B6B;
+            color: #1A1A1A;
+            border: 2px solid var(--border-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px var(--border-color);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .card:hover .delete-card-btn {
+            display: flex;
+        }
+
+        .delete-card-btn:hover {
+            background: #ff4c4c;
+            transform: scale(1.1);
+        }
+
+        /* Футер */
         footer {
             text-align: center;
             padding: 20px 0;
-            margin-top: 40px;
+            margin-top: auto;
             font-family: var(--font-title);
             font-size: 14px;
             color: #555;
         }
 
-        /* Модальное окно */
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.45);
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -275,7 +327,7 @@
             width: 100%;
             max-width: 800px;
             padding: 30px;
-            border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
+            border-radius: var(--sketch-radius);
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
@@ -290,6 +342,7 @@
             cursor: pointer;
             border: none;
             background: none;
+            line-height: 1;
         }
 
         .modal-grid {
@@ -299,7 +352,7 @@
             margin-top: 20px;
         }
 
-        @media(max-width: 768px) {
+        @media (max-width: 768px) {
             .modal-grid {
                 grid-template-columns: 1fr;
             }
@@ -319,106 +372,403 @@
             font-family: var(--font-title);
             font-weight: bold;
         }
+
+        /* Форма */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 18px;
+        }
+
+        .sketch-input, .sketch-select, .sketch-textarea {
+            width: 100%;
+            background-color: #FFF;
+            border: 3px solid var(--border-color);
+            padding: 10px 14px;
+            font-family: var(--font-main);
+            font-size: 18px;
+            color: var(--text-color);
+            border-radius: var(--sketch-radius-sm);
+            box-shadow: 2px 2px 0px var(--border-color);
+            outline: none;
+        }
+
+        .sketch-input:focus, .sketch-select:focus, .sketch-textarea:focus {
+            background-color: #FFFDF0;
+            box-shadow: 4px 4px 0px var(--border-color);
+        }
+
+        .sketch-textarea {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        .submit-btn {
+            background-color: var(--accent-yellow);
+            border: 3px solid var(--border-color);
+            padding: 12px 24px;
+            font-family: var(--font-main);
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--border-color);
+            border-radius: var(--sketch-radius-sm);
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--border-color);
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Шапка: крупный логотип по центру сверху -->
         <header>
             <div class="logo-container">
-                <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img">
+                <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img" onerror="this.style.display='none'">
             </div>
             
-            <div class="nav-filters">
-                <button class="filter-btn active" onclick="filterProjects('all')">ALL</button>
-                <button class="filter-btn" onclick="filterProjects('games')">GAMES</button>
-                <button class="filter-btn" onclick="filterProjects('technologie')">TECNOLOGE</button>
-                <button class="filter-btn" onclick="filterProjects('lesson')">LESSON</button>
-                <button class="filter-btn" onclick="filterProjects('hobby')">HOBBY / HEALTH</button>
-            </div>
+            <nav class="nav-filters" id="filterBar">
+                <button type="button" class="filter-btn active" data-category="all">ALL</button>
+                <button type="button" class="filter-btn" data-category="games">GAMES</button>
+                <button type="button" class="filter-btn" data-category="technologie">TECNOLOGE</button>
+                <button type="button" class="filter-btn" data-category="lesson">LESSON</button>
+                <button type="button" class="filter-btn" data-category="hobby">HOBBY / HEALTH</button>
+            </nav>
         </header>
 
-        <!-- Приветствие -->
-        <div class="welcome-banner">
+        <section class="welcome-banner">
             <div class="welcome-text">
                 <h1>Лаборатория идей и разработок 🧪✨</h1>
                 <p>Добро пожаловать в мой интерактивный каталог! Здесь собраны пет-проекты, алгоритмы, игры и учебные материалы.</p>
             </div>
-            <button class="add-btn" onclick="openAddModal()">+ Добавить идею</button>
-        </div>
+            <button type="button" class="add-btn" id="openAddBtn">+ Добавить идею</button>
+        </section>
 
-        <!-- Сетка проектов -->
-        <div class="projects-grid" id="projectsGrid">
-            <div class="card" data-category="technologie" onclick="openModal('Map Founder', 'Интерактивный поисковик кратчайших путей и лабиринтов на графах с визуализацией шагов алгоритма Дейкстры и A*.\n\nПроект создан для исследования производительности алгоритмов поиска пути на веб-технологиях.', 'Окт 2026', 'https://github.com')">
-                <div>
-                    <div class="card-header">
-                        <span class="card-tag">TECNOLOGIE</span>
-                        <div class="card-icon">🗺️</div>
-                    </div>
-                    <div class="card-title">MAP FOUNDER</div>
-                    <div class="card-desc">Интерактивный поисковик кратчайших путей и лабиринтов на графах с визуализацией шагов.</div>
-                </div>
-                <div class="card-footer">
-                    <span class="card-date">📅 Окт 2026</span>
-                    <span class="card-link-btn">Открыть деталь →</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Компактный футер в самом низу -->
-        <footer>
-            CATALOGUE N-LAB © 2026 • Сделано с вдохновением и капелькой юмора
-        </footer>
+        <main class="projects-grid" id="projectsGrid"></main>
     </div>
 
-    <!-- Модальное окно -->
-    <div class="modal" id="projectModal">
+    <footer>
+        CATALOGUE N-LAB © 2026 • Сделано с вдохновением и капелькой юмора
+    </footer>
+
+    <!-- Модальное окно просмотра проекта -->
+    <div class="modal" id="projectModal" role="dialog" aria-modal="true">
         <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()">&times;</button>
-            <h2 id="modalTitle" style="font-family: var(--font-title); font-size: 26px; margin-bottom: 15px;">Название проекта</h2>
+            <button type="button" class="close-btn" data-close="projectModal" aria-label="Закрыть">&times;</button>
+            <h2 id="modalTitle" style="font-family: var(--font-title); font-size: 26px; margin-bottom: 15px;"></h2>
             <div class="modal-grid">
                 <div>
-                    <p id="modalDesc" style="line-height: 1.6; margin-bottom: 20px; white-space: pre-line;">Описание проекта...</p>
-                    <p><strong>Ссылка:</strong> <a id="modalLink" href="#" target="_blank" style="color: #0066cc;">Открыть репозиторий / проект</a></p>
+                    <p id="modalDesc" style="line-height: 1.6; margin-bottom: 20px; white-space: pre-line;"></p>
+                    <p id="modalLinkWrapper">
+                        <strong>Ссылка:</strong> 
+                        <a id="modalLink" href="#" target="_blank" rel="noopener noreferrer" style="color: #0066cc;">Открыть репозиторий / проект</a>
+                    </p>
                 </div>
                 <div class="modal-preview-box">
-                    <div style="font-size: 40px; margin-bottom: 10px;">🗺️</div>
-                    <div>MAP FOUNDER SCHEMA</div>
-                    <div style="font-size: 14px; color: #555; font-weight: normal; margin-top: 5px;">Более подробная схема или график работы пути</div>
+                    <div id="modalPreviewIcon" style="font-size: 46px; margin-bottom: 10px;"></div>
+                    <div id="modalPreviewTitle"></div>
+                    <div style="font-size: 14px; color: #555; font-weight: normal; margin-top: 5px;">Схема и детали концепта</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления новой идеи -->
+    <div class="modal" id="addIdeaModal" role="dialog" aria-modal="true">
+        <div class="modal-content" style="max-width: 560px;">
+            <button type="button" class="close-btn" data-close="addIdeaModal" aria-label="Закрыть">&times;</button>
+            <h2 style="font-family: var(--font-title); font-size: 26px; margin-bottom: 20px;">Новая идея в каталог 💡</h2>
+            
+            <form id="addIdeaForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ideaTitle">Название проекта *</label>
+                        <input type="text" id="ideaTitle" class="sketch-input" placeholder="Например: Pixel RPG" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ideaIcon">Иконка (Эмодзи)</label>
+                        <input type="text" id="ideaIcon" class="sketch-input" value="🚀" maxlength="4">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ideaCategory">Категория *</label>
+                        <select id="ideaCategory" class="sketch-select">
+                            <option value="technologie">TECNOLOGE</option>
+                            <option value="games">GAMES</option>
+                            <option value="lesson">LESSON</option>
+                            <option value="hobby">HOBBY / HEALTH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ideaDate">Дата</label>
+                        <input type="text" id="ideaDate" class="sketch-input" value="Ноя 2026">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ideaShortDesc">Краткое описание (для карточки) *</label>
+                    <input type="text" id="ideaShortDesc" class="sketch-input" placeholder="В двух словах о сути проекта..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ideaFullDesc">Подробное описание (внутри окна)</label>
+                    <textarea id="ideaFullDesc" class="sketch-textarea" placeholder="Детали реализации, стек технологий, задачи..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="ideaLink">Ссылка (GitHub, сайт и т.д.)</label>
+                    <input type="url" id="ideaLink" class="sketch-input" placeholder="https://github.com/...">
+                </div>
+
+                <button type="submit" class="submit-btn">✨ Добавить в каталог</button>
+            </form>
         </div>
     </div>
 
     <script>
-        function filterProjects(category) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
+        (() => {
+            const STORAGE_KEY = 'nlab_projects';
+            const CATEGORY_LABELS = {
+                games: 'GAMES',
+                technologie: 'TECNOLOGE',
+                lesson: 'LESSON',
+                hobby: 'HOBBY / HEALTH'
+            };
 
-        function openModal(title, desc, date, link) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalDesc').innerText = desc;
-            document.getElementById('modalLink').href = link;
-            document.getElementById('projectModal').classList.add('active');
-        }
+            let currentFilter = 'all';
 
-        function closeModal() {
-            document.getElementById('projectModal').classList.remove('active');
-        }
+            const gridEl = document.getElementById('projectsGrid');
+            const filterBarEl = document.getElementById('filterBar');
+            const projectModalEl = document.getElementById('projectModal');
+            const addIdeaModalEl = document.getElementById('addIdeaModal');
+            const addIdeaFormEl = document.getElementById('addIdeaForm');
 
-        function openAddModal() {
-            alert("Функция добавления новой идеи скоро появится!");
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('projectModal');
-            if (event.target === modal) {
-                closeModal();
+            // Безопасная работа с localStorage
+            function loadProjects() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    const parsed = raw ? JSON.parse(raw) : [];
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (err) {
+                    console.error('Ошибка чтения localStorage:', err);
+                    return [];
+                }
             }
-        }
+
+            function saveProjects(projects) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+                } catch (err) {
+                    console.error('Ошибка записи в localStorage:', err);
+                    alert('Не удалось сохранить идею в память браузера.');
+                }
+            }
+
+            // Создание DOM-элемента карточки без innerHTML (защита от XSS)
+            function createCardElement(project) {
+                const card = document.createElement('article');
+                card.className = 'card';
+                card.addEventListener('click', () => openProjectModal(project));
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = 'delete-card-btn';
+                delBtn.title = 'Удалить идею';
+                delBtn.textContent = '×';
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteIdea(project.id);
+                });
+
+                const topWrap = document.createElement('div');
+
+                const header = document.createElement('div');
+                header.className = 'card-header';
+
+                const tag = document.createElement('span');
+                tag.className = 'card-tag';
+                tag.textContent = project.tagLabel || CATEGORY_LABELS[project.category] || 'IDEA';
+
+                const icon = document.createElement('div');
+                icon.className = 'card-icon';
+                icon.textContent = project.icon || '💡';
+
+                header.append(tag, icon);
+
+                const title = document.createElement('h3');
+                title.className = 'card-title';
+                title.textContent = project.title;
+
+                const desc = document.createElement('p');
+                desc.className = 'card-desc';
+                desc.textContent = project.shortDesc;
+
+                topWrap.append(header, title, desc);
+
+                const footer = document.createElement('div');
+                footer.className = 'card-footer';
+
+                const date = document.createElement('span');
+                date.className = 'card-date';
+                date.textContent = `📅 ${project.date}`;
+
+                const actionLabel = document.createElement('span');
+                actionLabel.className = 'card-link-btn';
+                actionLabel.textContent = 'Открыть деталь →';
+
+                footer.append(date, actionLabel);
+                card.append(delBtn, topWrap, footer);
+
+                return card;
+            }
+
+            // Отрисовка сетки
+            function renderProjects() {
+                gridEl.innerHTML = '';
+                const projects = loadProjects();
+                const filtered = currentFilter === 'all'
+                    ? projects
+                    : projects.filter(p => p.category === currentFilter);
+
+                if (filtered.length === 0) {
+                    const emptyBox = document.createElement('div');
+                    emptyBox.className = 'empty-state';
+                    emptyBox.textContent = currentFilter === 'all'
+                        ? 'В каталоге пока нет ни одной идеи. Нажмите «+ Добавить идею», чтобы создать первую карточку! ✏️'
+                        : 'В этой категории пока пусто. Нажмите «+ Добавить идею», чтобы пополнить раздел! 💡';
+                    gridEl.appendChild(emptyBox);
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+                filtered.forEach(project => fragment.appendChild(createCardElement(project)));
+                gridEl.appendChild(fragment);
+            }
+
+            // Фильтрация (делегирование событий)
+            filterBarEl.addEventListener('click', (e) => {
+                const btn = e.target.closest('.filter-btn');
+                if (!btn) return;
+
+                currentFilter = btn.dataset.category;
+                filterBarEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderProjects();
+            });
+
+            // Открытие окна деталей
+            function openProjectModal(project) {
+                document.getElementById('modalTitle').textContent = project.title;
+                document.getElementById('modalDesc').textContent = project.fullDesc || project.shortDesc;
+                document.getElementById('modalPreviewIcon').textContent = project.icon || '💡';
+                document.getElementById('modalPreviewTitle').textContent = `${project.title.toUpperCase()} SCHEMA`;
+
+                const linkWrapper = document.getElementById('modalLinkWrapper');
+                const linkEl = document.getElementById('modalLink');
+
+                if (project.link && /^https?:\/\//i.test(project.link)) {
+                    linkWrapper.style.display = 'block';
+                    linkEl.href = project.link;
+                } else {
+                    linkWrapper.style.display = 'none';
+                }
+
+                projectModalEl.classList.add('active');
+            }
+
+            // Открытие окна добавления
+            document.getElementById('openAddBtn').addEventListener('click', () => {
+                addIdeaModalEl.classList.add('active');
+                document.getElementById('ideaTitle').focus();
+            });
+
+            // Закрытие модалок по кнопке, фону или клавише Escape
+            document.querySelectorAll('[data-close]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById(btn.dataset.close).classList.remove('active');
+                });
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                }
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+                }
+            });
+
+            // Сохранение новой идеи
+            addIdeaFormEl.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const title = document.getElementById('ideaTitle').value.trim();
+                const shortDesc = document.getElementById('ideaShortDesc').value.trim();
+                if (!title || !shortDesc) return;
+
+                const category = document.getElementById('ideaCategory').value;
+                const newProject = {
+                    id: `idea-${Date.now()}`,
+                    title,
+                    category,
+                    tagLabel: CATEGORY_LABELS[category] || category.toUpperCase(),
+                    icon: document.getElementById('ideaIcon').value.trim() || '💡',
+                    shortDesc,
+                    fullDesc: document.getElementById('ideaFullDesc').value.trim() || shortDesc,
+                    date: document.getElementById('ideaDate').value.trim() || 'Ноя 2026',
+                    link: document.getElementById('ideaLink').value.trim()
+                };
+
+                const projects = loadProjects();
+                projects.unshift(newProject);
+                saveProjects(projects);
+
+                addIdeaFormEl.reset();
+                document.getElementById('ideaIcon').value = '🚀';
+                document.getElementById('ideaDate').value = 'Ноя 2026';
+                addIdeaModalEl.classList.remove('active');
+
+                renderProjects();
+            });
+
+            // Удаление идеи
+            function deleteIdea(id) {
+                if (!confirm('Удалить эту идею из каталога?')) return;
+                const updated = loadProjects().filter(p => p.id !== id);
+                saveProjects(updated);
+                renderProjects();
+            }
+
+            // Инициализация
+            renderProjects();
+        })();
     </script>
 </body>
 </html>
