@@ -1,10 +1,3 @@
-Отличные доработки! Всё реализовано:
-
-1. **Выбор эмодзи из готового набора**: вместо ручного ввода сделан удобный выбор с готовыми иконками (`🚀`, `💀`, `😊`, `🌸`, `🧪`, `🗺️`, `🎮`, `⚡`, `🧠`, `🔥`) и возможностью вписать своё, если хочется чего-то особенного.
-2. **Никаких полос прокрутки**: модальное окно теперь без скроллбара (`overflow: visible` / компактная компоновка), так что всё помещается аккуратно и прокручивается естественным скроллом страницы/окна без серого ползунка.
-3. **Загрузка фото схемы с обрезкой по рамке**: в форму добавлено поле загрузки изображения — файл сжимается и кодируется в Data URL для сохранения в `localStorage`, а в окне просмотра в блоке схемы отображается картинка с `object-fit: cover` и скруглением точно по рамке (с кнопкой очистки схемы, если фото не загружено или нужно убрать его).
-
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -14,33 +7,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #F4EEDB;
-            --card-bg: #FFFDF4;
-            --text-color: #1A1A1A;
-            --border-color: #1A1A1A;
-            --accent-yellow: #FFD400;
-            --shadow: 4px 5px 0px #1A1A1A;
-            --shadow-hover: 6px 7px 0px #1A1A1A;
+            --bg: #EFE5C7;
+            --paper: #FBF3D5;
+            --paper-aged: #F4E6B8;
+            --ink: #1A1A1A;
+            --yellow: #FFD400;
+            --shadow: 4px 5px 0 var(--ink);
             --font-main: 'Patrick Hand', cursive, sans-serif;
             --font-title: 'Architects Daughter', cursive, sans-serif;
-            --sketch-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
-            --sketch-radius-sm: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            --r: 255px 22px 230px 28px / 24px 235px 20px 250px;
+            --r-sm: 255px 14px 220px 16px / 14px 220px 16px 255px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(rgba(0, 0, 0, 0.04) 15%, transparent 16%),
-                radial-gradient(rgba(139, 69, 19, 0.06) 15%, transparent 16%);
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(rgba(120, 80, 20, 0.08) 15%, transparent 16%),
+                radial-gradient(rgba(0, 0, 0, 0.04) 15%, transparent 16%);
             background-size: 20px 20px;
             background-position: 0 0, 10px 10px;
-            color: var(--text-color);
+            color: var(--ink);
             font-family: var(--font-main);
             font-size: 19px;
             padding: 25px;
@@ -49,335 +37,128 @@
             flex-direction: column;
         }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            flex: 1;
-        }
+        .container { max-width: 1200px; width: 100%; margin: 0 auto; flex: 1; }
 
-        /* Шапка */
-        header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 45px;
-            gap: 30px;
-        }
+        header { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; gap: 26px; }
+        .logo-img { max-height: 210px; width: auto; mix-blend-mode: multiply; transform: rotate(-1.5deg); transition: transform 0.2s; }
+        .logo-img:hover { transform: rotate(0) scale(1.02); }
 
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo-img {
-            max-height: 210px;
-            width: auto;
-            object-fit: contain;
-            mix-blend-mode: multiply;
-            transform: rotate(-1.5deg);
-            transition: transform 0.2s ease;
-        }
-
-        .logo-img:hover {
-            transform: rotate(0deg) scale(1.02);
-        }
-
-        /* Фильтры */
-        .nav-filters {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .filter-btn {
-            background-color: var(--card-bg);
-            border: 3px solid var(--border-color);
-            padding: 8px 18px;
+        .nav-filters { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .filter-btn, .add-btn, .submit-btn, .file-btn, .size-btn {
+            border: 3px solid var(--ink);
             font-family: var(--font-main);
-            font-size: 17px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 3px 3px 0px var(--border-color);
-            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
-            border-radius: var(--sketch-radius);
-            transform: rotate(1deg);
+            box-shadow: 3px 3px 0 var(--ink);
+            border-radius: var(--r-sm);
+            transition: transform 0.1s, box-shadow 0.1s;
         }
+        .filter-btn { background: var(--paper); padding: 8px 18px; font-size: 17px; transform: rotate(1deg); }
+        .filter-btn:nth-child(even) { transform: rotate(-1.5deg); }
+        .filter-btn:hover { transform: translate(-2px, -2px) rotate(0); box-shadow: 5px 5px 0 var(--ink); }
+        .filter-btn.active { background: var(--yellow); }
 
-        .filter-btn:nth-child(even) {
-            transform: rotate(-1.5deg);
-        }
-
-        .filter-btn:hover {
-            transform: translate(-2px, -2px) rotate(0deg);
-            box-shadow: 5px 5px 0px var(--border-color);
-        }
-
-        .filter-btn.active {
-            background-color: var(--accent-yellow);
-        }
-
-        /* Баннер-приветствие */
         .welcome-banner {
-            background-color: var(--card-bg);
-            border: 3px solid var(--border-color);
+            background: linear-gradient(155deg, var(--paper) 55%, var(--paper-aged) 100%);
+            border: 3px solid var(--ink);
             box-shadow: var(--shadow);
             padding: 25px;
-            margin-bottom: 40px;
+            margin-bottom: 38px;
             border-radius: 235px 25px 205px 35px / 35px 205px 25px 235px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
-            transform: rotate(-0.5deg);
+            transform: rotate(-0.6deg);
         }
+        .welcome-text h1 { font-family: var(--font-title); font-size: 28px; margin-bottom: 8px; }
 
-        .welcome-text h1 {
-            font-family: var(--font-title);
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
+        .add-btn { background: #A3E4D7; padding: 10px 20px; font-size: 18px; }
+        .add-btn:hover { background: #76D7C4; transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); }
 
-        .add-btn {
-            background-color: #A3E4D7;
-            border: 3px solid var(--border-color);
-            padding: 10px 20px;
-            font-family: var(--font-main);
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 3px 3px 0px var(--border-color);
-            border-radius: var(--sketch-radius-sm);
-            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
-        }
-
-        .add-btn:hover {
-            background-color: #76D7C4;
-            transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0px var(--border-color);
-        }
-
-        /* Сетка проектов */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 35px;
-            margin-bottom: 50px;
-        }
-
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 34px; margin-bottom: 45px; }
         .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            background-color: rgba(255, 253, 244, 0.7);
-            border: 3px dashed #888;
-            border-radius: var(--sketch-radius);
-            padding: 45px 20px;
-            color: #444;
-            font-size: 22px;
+            grid-column: 1 / -1; text-align: center;
+            background: rgba(251, 243, 213, 0.65); border: 3px dashed #7a6b4c;
+            border-radius: var(--r); padding: 45px 20px; color: #4a4232; font-size: 22px;
         }
 
+        /* Скетчовые карточки с лёгкой желтизной и небрежностью */
         .card {
-            background-color: var(--card-bg);
-            border: 3px solid var(--border-color);
-            border-radius: var(--sketch-radius);
+            background: linear-gradient(160deg, var(--paper) 45%, var(--paper-aged) 100%);
+            border: 3px solid var(--ink);
+            border-radius: 245px 18px 215px 32px / 28px 215px 18px 245px;
             box-shadow: var(--shadow);
             padding: 22px;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.18s, box-shadow 0.18s;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transform: rotate(0.8deg);
+            transform: rotate(-1.1deg);
             position: relative;
         }
-
         .card:nth-child(even) {
-            transform: rotate(-0.7deg);
+            background: linear-gradient(140deg, var(--paper-aged) 15%, var(--paper) 75%);
+            border-radius: 220px 30px 245px 16px / 18px 240px 28px 215px;
+            transform: rotate(1.2deg);
         }
+        .card:nth-child(3n) { transform: rotate(-0.5deg); }
+        .card:hover { transform: translateY(-5px) rotate(0); box-shadow: 6px 7px 0 var(--ink); }
 
-        .card:hover {
-            transform: translateY(-5px) rotate(0deg);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .card-tag {
-            background-color: var(--accent-yellow);
-            border: 2px solid var(--border-color);
-            padding: 4px 10px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: var(--sketch-radius-sm);
-        }
-
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .card-tag { background: var(--yellow); border: 2px solid var(--ink); padding: 4px 10px; font-size: 14px; font-weight: bold; border-radius: var(--r-sm); transform: rotate(-1.5deg); }
         .card-icon {
-            font-size: 24px;
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--sketch-radius-sm);
-            box-shadow: 2px 2px 0px var(--border-color);
+            font-size: 24px; background: var(--paper); border: 2px solid var(--ink);
+            width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+            border-radius: var(--r-sm); box-shadow: 2px 2px 0 var(--ink); transform: rotate(2deg);
         }
+        .card-title { font-family: var(--font-title); font-size: 24px; margin-bottom: 10px; text-transform: uppercase; word-break: break-word; }
+        .card-desc { font-size: 17px; color: #2b2823; margin-bottom: 18px; line-height: 1.4; word-break: break-word; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 2px dashed #8c7d5b; padding-top: 12px; font-size: 15px; }
+        .card-date { color: #524a3a; }
+        .card-link-btn { font-weight: bold; }
+        .card:hover .card-link-btn { text-decoration: underline; }
 
-        .card-title {
-            font-family: var(--font-title);
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            word-break: break-word;
-        }
-
-        .card-desc {
-            font-size: 17px;
-            color: #333;
-            margin-bottom: 20px;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 2px dashed #999;
-            padding-top: 12px;
-            font-size: 15px;
-        }
-
-        .card-date {
-            color: #555;
-        }
-
-        .card-link-btn {
-            font-weight: bold;
-            color: #000;
-        }
-
-        .card:hover .card-link-btn {
-            text-decoration: underline;
-        }
-
-        /* Кнопка удаления */
         .delete-card-btn {
-            position: absolute;
-            top: -12px;
-            right: -10px;
-            background: #FF6B6B;
-            color: #1A1A1A;
-            border: 2px solid var(--border-color);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 18px;
-            line-height: 1;
-            cursor: pointer;
-            box-shadow: 2px 2px 0px var(--border-color);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
+            position: absolute; top: -11px; right: -9px; background: #FF6B6B; border: 2px solid var(--ink);
+            width: 30px; height: 30px; border-radius: 50%; font-weight: bold; font-size: 18px; line-height: 1;
+            cursor: pointer; box-shadow: 2px 2px 0 var(--ink); display: none; align-items: center; justify-content: center;
         }
+        .card:hover .delete-card-btn { display: flex; }
 
-        .card:hover .delete-card-btn {
-            display: flex;
-        }
-
-        .delete-card-btn:hover {
-            background: #ff4c4c;
-            transform: scale(1.1);
-        }
-
-        /* Футер */
-        footer {
-            text-align: center;
-            padding: 20px 0;
-            margin-top: auto;
-            font-family: var(--font-title);
-            font-size: 14px;
-            color: #555;
-        }
+        footer { text-align: center; padding: 20px 0; font-family: var(--font-title); font-size: 14px; color: #555; }
 
         /* Модальные окна без полос прокрутки */
         .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.45);
-            justify-content: center;
-            align-items: flex-start;
-            padding: 24px 16px;
-            z-index: 1000;
-            overflow-y: auto;
-            scrollbar-width: none;
+            display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45);
+            justify-content: center; align-items: flex-start; padding: 24px 16px; z-index: 1000;
+            overflow-y: auto; scrollbar-width: none;
         }
-
-        .modal::-webkit-scrollbar {
-            display: none;
-        }
-
-        .modal.active {
-            display: flex;
-        }
+        .modal::-webkit-scrollbar { display: none; }
+        .modal.active { display: flex; }
 
         .modal-content {
-            background-color: var(--card-bg);
-            border: 3px solid var(--border-color);
-            box-shadow: 8px 8px 0px var(--border-color);
+            background: linear-gradient(150deg, var(--paper) 50%, var(--paper-aged) 100%);
+            border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink);
+            width: 100%; max-width: 800px; padding: 26px 30px;
+            border-radius: 34px 20px 38px 24px / 22px 36px 20px 34px;
+            position: relative; margin: auto; transform: rotate(-0.4deg);
+        }
+        .close-btn { position: absolute; top: 14px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; border: none; background: none; line-height: 1; }
+
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 16px; align-items: start; }
+        @media (max-width: 768px) { .modal-grid { grid-template-columns: 1fr; } }
+
+        /* Рамка фото с выбором формы */
+        .photo-frame {
+            background: #EAE0BE;
+            border: 2.5px dashed var(--ink);
+            border-radius: 22px;
             width: 100%;
-            max-width: 800px;
-            padding: 26px 30px;
-            border-radius: 36px 24px 38px 26px / 26px 38px 24px 36px;
-            position: relative;
-            overflow: visible;
-            margin: auto;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 14px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            background: none;
-            line-height: 1;
-        }
-
-        .modal-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
-            margin-top: 16px;
-            align-items: start;
-        }
-
-        @media (max-width: 768px) {
-            .modal-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Окошко схемы с обрезкой фото по рамке */
-        .modal-preview-box {
-            background: #EFE8D6;
-            border: 2.5px dashed var(--border-color);
-            border-radius: 24px;
-            width: 100%;
+            max-width: 340px;
+            margin: 0 auto;
             aspect-ratio: 4 / 3;
             overflow: hidden;
             position: relative;
@@ -388,178 +169,57 @@
             text-align: center;
             font-family: var(--font-title);
             font-weight: bold;
+            box-shadow: 3px 3px 0 rgba(26, 26, 26, 0.25);
+        }
+        .photo-frame.shape-square { aspect-ratio: 1 / 1; max-width: 280px; }
+        .photo-frame.shape-landscape { aspect-ratio: 4 / 3; max-width: 340px; }
+        .photo-frame.shape-portrait { aspect-ratio: 3 / 4; max-width: 250px; }
+
+        .photo-frame img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            filter: sepia(0.14) contrast(1.04);
         }
 
-        .modal-preview-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            display: block;
-        }
-
-        .preview-placeholder {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Форма */
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 14px;
-        }
-
-        @media (max-width: 540px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 17px;
-        }
+        .form-group { margin-bottom: 12px; }
+        .form-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+        @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 17px; }
 
         .sketch-input, .sketch-select, .sketch-textarea {
-            width: 100%;
-            background-color: #FFF;
-            border: 3px solid var(--border-color);
-            padding: 8px 13px;
-            font-family: var(--font-main);
-            font-size: 17px;
-            color: var(--text-color);
-            border-radius: var(--sketch-radius-sm);
-            box-shadow: 2px 2px 0px var(--border-color);
-            outline: none;
+            width: 100%; background: var(--paper); border: 3px solid var(--ink);
+            padding: 8px 13px; font-family: var(--font-main); font-size: 17px; color: var(--ink);
+            border-radius: var(--r-sm); box-shadow: 2px 2px 0 var(--ink); outline: none;
         }
+        .sketch-input:focus, .sketch-select:focus, .sketch-textarea:focus { background: #FFFDF2; box-shadow: 4px 4px 0 var(--ink); }
+        .sketch-textarea { resize: none; min-height: 66px; }
 
-        .sketch-input:focus, .sketch-select:focus, .sketch-textarea:focus {
-            background-color: #FFFDF0;
-            box-shadow: 4px 4px 0px var(--border-color);
-        }
-
-        .sketch-textarea {
-            resize: none;
-            min-height: 68px;
-        }
-
-        /* Плитка эмодзи на выбор */
-        .emoji-picker {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-top: 6px;
-        }
-
+        .emoji-picker, .shape-picker { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
         .emoji-chip {
-            background: #FFF;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            width: 36px;
-            height: 36px;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 2px 2px 0px var(--border-color);
-            transition: transform 0.1s ease, background-color 0.1s ease;
+            background: var(--paper); border: 2px solid var(--ink); border-radius: 10px;
+            width: 36px; height: 36px; font-size: 20px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 var(--ink);
         }
+        .emoji-chip.selected, .size-btn.active { background: var(--yellow); }
 
-        .emoji-chip:hover {
-            transform: translateY(-2px);
-            background: #FFF9DB;
-        }
+        .size-btn { background: var(--paper); padding: 5px 12px; font-size: 15px; }
 
-        .emoji-chip.selected {
-            background: var(--accent-yellow);
-            transform: scale(1.06);
-        }
-
-        /* Загрузка фото схемы */
-        .file-upload-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .file-btn {
-            background-color: #FFF;
-            border: 2.5px solid var(--border-color);
-            padding: 6px 14px;
-            font-family: var(--font-main);
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: var(--sketch-radius-sm);
-            box-shadow: 2px 2px 0px var(--border-color);
-            display: inline-block;
-        }
-
-        .file-btn:hover {
-            background-color: #FFF9DB;
-        }
-
-        .file-name {
-            font-size: 15px;
-            color: #444;
-            max-width: 240px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
+        .file-upload-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .file-btn { background: var(--paper); padding: 6px 14px; font-size: 16px; }
+        .file-name { font-size: 15px; color: #4a4232; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .clear-img-btn {
-            background: #FFE0E0;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 3px 9px;
-            font-family: var(--font-main);
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
+            background: #FFE0E0; border: 2px solid var(--ink); border-radius: 8px;
+            padding: 3px 9px; font-family: var(--font-main); font-size: 14px; font-weight: bold; cursor: pointer;
         }
 
-        .submit-btn {
-            background-color: var(--accent-yellow);
-            border: 3px solid var(--border-color);
-            padding: 11px 22px;
-            font-family: var(--font-main);
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 4px 4px 0px var(--border-color);
-            border-radius: var(--sketch-radius-sm);
-            width: 100%;
-            margin-top: 8px;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px var(--border-color);
-        }
+        .submit-btn { background: var(--yellow); padding: 11px 22px; font-size: 20px; width: 100%; margin-top: 8px; }
+        .submit-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <div class="logo-container">
-                <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img" onerror="this.style.display='none'">
-            </div>
-            
+            <img src="logo.png" alt="CATALOGUE N-LAB" class="logo-img" onerror="this.style.display='none'">
             <nav class="nav-filters" id="filterBar">
                 <button type="button" class="filter-btn active" data-category="all">ALL</button>
                 <button type="button" class="filter-btn" data-category="games">GAMES</button>
@@ -580,28 +240,26 @@
         <main class="projects-grid" id="projectsGrid"></main>
     </div>
 
-    <footer>
-        CATALOGUE N-LAB © 2026 • Сделано с вдохновением и капелькой юмора
-    </footer>
+    <footer>CATALOGUE N-LAB © 2026 • Сделано с вдохновением и капелькой юмора</footer>
 
-    <!-- Модальное окно просмотра проекта -->
-    <div class="modal" id="projectModal" role="dialog" aria-modal="true">
+    <!-- Просмотр проекта -->
+    <div class="modal" id="projectModal">
         <div class="modal-content">
-            <button type="button" class="close-btn" data-close="projectModal" aria-label="Закрыть">&times;</button>
+            <button type="button" class="close-btn" data-close="projectModal">&times;</button>
             <h2 id="modalTitle" style="font-family: var(--font-title); font-size: 26px; margin-bottom: 12px;"></h2>
             <div class="modal-grid">
                 <div>
                     <p id="modalDesc" style="line-height: 1.55; margin-bottom: 16px; white-space: pre-line;"></p>
                     <p id="modalLinkWrapper">
-                        <strong>Ссылка:</strong> 
+                        <strong>Ссылка:</strong>
                         <a id="modalLink" href="#" target="_blank" rel="noopener noreferrer" style="color: #0066cc;">Открыть репозиторий / проект</a>
                     </p>
                 </div>
-                <div class="modal-preview-box" id="modalPreviewBox">
-                    <img id="modalPreviewImg" alt="Схема проекта" style="display: none;">
-                    <div class="preview-placeholder" id="modalPreviewPlaceholder">
-                        <div id="modalPreviewIcon" style="font-size: 44px; margin-bottom: 8px;"></div>
-                        <div id="modalPreviewTitle"></div>
+                <div class="photo-frame shape-landscape" id="modalFrame">
+                    <img id="modalImg" alt="Схема проекта" style="display: none;">
+                    <div id="modalPlaceholder" style="padding: 16px;">
+                        <div id="modalIcon" style="font-size: 44px; margin-bottom: 8px;"></div>
+                        <div id="modalSchemaTitle"></div>
                         <div style="font-size: 14px; color: #555; font-weight: normal; margin-top: 4px;">Схема не загружена</div>
                     </div>
                 </div>
@@ -609,12 +267,12 @@
         </div>
     </div>
 
-    <!-- Модальное окно добавления новой идеи -->
-    <div class="modal" id="addIdeaModal" role="dialog" aria-modal="true">
-        <div class="modal-content" style="max-width: 580px;">
-            <button type="button" class="close-btn" data-close="addIdeaModal" aria-label="Закрыть">&times;</button>
-            <h2 style="font-family: var(--font-title); font-size: 26px; margin-bottom: 16px;">Новая идея в каталог 💡</h2>
-            
+    <!-- Добавление идеи -->
+    <div class="modal" id="addIdeaModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button type="button" class="close-btn" data-close="addIdeaModal">&times;</button>
+            <h2 style="font-family: var(--font-title); font-size: 26px; margin-bottom: 14px;">Новая идея в каталог 💡</h2>
+
             <form id="addIdeaForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -640,7 +298,7 @@
                         <button type="button" class="emoji-chip" data-emoji="⚡">⚡</button>
                         <button type="button" class="emoji-chip" data-emoji="🧠">🧠</button>
                         <button type="button" class="emoji-chip" data-emoji="🔥">🔥</button>
-                        <input type="text" id="ideaIcon" class="sketch-input" value="🚀" maxlength="4" style="width: 66px; padding: 4px 8px; text-align: center;" aria-label="Своя иконка">
+                        <input type="text" id="ideaIcon" class="sketch-input" value="🚀" maxlength="4" style="width: 64px; padding: 4px 8px; text-align: center;">
                     </div>
                 </div>
 
@@ -665,12 +323,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Фото / схема проекта (обрежется по рамке)</label>
+                    <label>Фото / схема и размер рамки</label>
                     <div class="file-upload-row">
                         <label for="ideaSchemaFile" class="file-btn">🖼️ Выбрать фото</label>
                         <input type="file" id="ideaSchemaFile" accept="image/*" style="display: none;">
                         <span class="file-name" id="schemaFileName">Файл не выбран</span>
                         <button type="button" class="clear-img-btn" id="clearSchemaBtn" style="display: none;">Убрать</button>
+                    </div>
+                    <div class="shape-picker" id="shapePicker">
+                        <button type="button" class="size-btn" data-shape="square">Квадрат</button>
+                        <button type="button" class="size-btn active" data-shape="landscape">Лежачий</button>
+                        <button type="button" class="size-btn" data-shape="portrait">Стоячий</button>
+                    </div>
+                    <div class="photo-frame shape-landscape" id="formPreviewFrame" style="margin-top: 12px;">
+                        <img id="formPreviewImg" alt="Превью фото" style="display: none;">
+                        <span id="formPreviewHint" style="padding: 12px; font-size: 15px; color: #555;">Предпросмотр фото появится здесь</span>
                     </div>
                 </div>
 
@@ -686,307 +353,244 @@
 
     <script>
         (() => {
-            const STORAGE_KEY = 'nlab_projects_v2';
-            const CATEGORY_LABELS = {
-                games: 'GAMES',
-                technologie: 'TECNOLOGE',
-                lesson: 'LESSON',
-                hobby: 'HOBBY / HEALTH'
+            const KEY = 'nlab_projects_v3';
+            const TAGS = { games: 'GAMES', technologie: 'TECNOLOGE', lesson: 'LESSON', hobby: 'HOBBY / HEALTH' };
+
+            let filter = 'all';
+            let shape = 'landscape';
+            let photoData = '';
+
+            const grid = document.getElementById('projectsGrid');
+            const filterBar = document.getElementById('filterBar');
+            const addModal = document.getElementById('addIdeaModal');
+            const projectModal = document.getElementById('projectModal');
+            const form = document.getElementById('addIdeaForm');
+            const iconInput = document.getElementById('ideaIcon');
+            const fileInput = document.getElementById('ideaSchemaFile');
+            const fileName = document.getElementById('schemaFileName');
+            const clearBtn = document.getElementById('clearSchemaBtn');
+            const formFrame = document.getElementById('formPreviewFrame');
+            const formImg = document.getElementById('formPreviewImg');
+            const formHint = document.getElementById('formPreviewHint');
+
+            const load = () => {
+                try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+                catch { return []; }
             };
 
-            let currentFilter = 'all';
-            let uploadedSchemaDataUrl = '';
+            const save = (list) => {
+                try { localStorage.setItem(KEY, JSON.stringify(list)); return true; }
+                catch { alert('Файл слишком большой для локального сохранения.'); return false; }
+            };
 
-            const gridEl = document.getElementById('projectsGrid');
-            const filterBarEl = document.getElementById('filterBar');
-            const projectModalEl = document.getElementById('projectModal');
-            const addIdeaModalEl = document.getElementById('addIdeaModal');
-            const addIdeaFormEl = document.getElementById('addIdeaForm');
-            const emojiPickerEl = document.getElementById('emojiPicker');
-            const ideaIconInputEl = document.getElementById('ideaIcon');
-            const schemaFileInputEl = document.getElementById('ideaSchemaFile');
-            const schemaFileNameEl = document.getElementById('schemaFileName');
-            const clearSchemaBtnEl = document.getElementById('clearSchemaBtn');
+            const applyShape = (el, s) => {
+                el.classList.remove('shape-square', 'shape-landscape', 'shape-portrait');
+                el.classList.add(`shape-${s}`);
+            };
 
-            function loadProjects() {
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY);
-                    const parsed = raw ? JSON.parse(raw) : [];
-                    return Array.isArray(parsed) ? parsed : [];
-                } catch (err) {
-                    console.error('Ошибка чтения localStorage:', err);
-                    return [];
-                }
-            }
+            const setFormPhoto = (src, name = 'Файл не выбран') => {
+                photoData = src || '';
+                fileName.textContent = name;
+                clearBtn.style.display = photoData ? 'inline-block' : 'none';
+                formImg.src = photoData;
+                formImg.style.display = photoData ? 'block' : 'none';
+                formHint.style.display = photoData ? 'none' : 'block';
+            };
 
-            function saveProjects(projects) {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-                    return true;
-                } catch (err) {
-                    console.error('Ошибка записи в localStorage:', err);
-                    alert('Не удалось сохранить идею — возможно, выбран слишком тяжёлый файл для локального хранилища.');
-                    return false;
-                }
-            }
-
-            // Сжимаем загруженное изображение через canvas, чтобы оно не забивало localStorage
-            function processImageFile(file, callback) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const maxDim = 900;
-                        let { width, height } = img;
-                        if (width > maxDim || height > maxDim) {
-                            if (width > height) {
-                                height = Math.round((height * maxDim) / width);
-                                width = maxDim;
-                            } else {
-                                width = Math.round((width * maxDim) / height);
-                                height = maxDim;
-                            }
-                        }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        callback(canvas.toDataURL('image/jpeg', 0.85));
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-
-            schemaFileInputEl.addEventListener('change', (e) => {
+            fileInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-                schemaFileNameEl.textContent = file.name;
-                clearSchemaBtnEl.style.display = 'inline-block';
-                processImageFile(file, (dataUrl) => {
-                    uploadedSchemaDataUrl = dataUrl;
-                });
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const max = 900;
+                        let { width: w, height: h } = img;
+                        if (w > max || h > max) {
+                            const k = Math.min(max / w, max / h);
+                            w = Math.round(w * k);
+                            h = Math.round(h * k);
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        setFormPhoto(canvas.toDataURL('image/jpeg', 0.85), file.name);
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
             });
 
-            clearSchemaBtnEl.addEventListener('click', () => {
-                uploadedSchemaDataUrl = '';
-                schemaFileInputEl.value = '';
-                schemaFileNameEl.textContent = 'Файл не выбран';
-                clearSchemaBtnEl.style.display = 'none';
+            clearBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                setFormPhoto('');
             });
 
-            // Выбор эмодзи из готовых кнопок
-            emojiPickerEl.addEventListener('click', (e) => {
+            document.getElementById('shapePicker').addEventListener('click', (e) => {
+                const btn = e.target.closest('.size-btn');
+                if (!btn) return;
+                shape = btn.dataset.shape;
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('active', b === btn));
+                applyShape(formFrame, shape);
+            });
+
+            document.getElementById('emojiPicker').addEventListener('click', (e) => {
                 const chip = e.target.closest('.emoji-chip');
                 if (!chip) return;
-                const emoji = chip.dataset.emoji;
-                ideaIconInputEl.value = emoji;
-                emojiPickerEl.querySelectorAll('.emoji-chip').forEach(c => c.classList.remove('selected'));
-                chip.classList.add('selected');
+                iconInput.value = chip.dataset.emoji;
+                document.querySelectorAll('.emoji-chip').forEach(c => c.classList.toggle('selected', c === chip));
             });
 
-            ideaIconInputEl.addEventListener('input', () => {
-                const val = ideaIconInputEl.value.trim();
-                emojiPickerEl.querySelectorAll('.emoji-chip').forEach(c => {
-                    c.classList.toggle('selected', c.dataset.emoji === val);
-                });
+            iconInput.addEventListener('input', () => {
+                const v = iconInput.value.trim();
+                document.querySelectorAll('.emoji-chip').forEach(c => c.classList.toggle('selected', c.dataset.emoji === v));
             });
 
-            function createCardElement(project) {
+            function makeCard(p) {
                 const card = document.createElement('article');
                 card.className = 'card';
-                card.addEventListener('click', () => openProjectModal(project));
+                card.addEventListener('click', () => openProject(p));
 
-                const delBtn = document.createElement('button');
-                delBtn.type = 'button';
-                delBtn.className = 'delete-card-btn';
-                delBtn.title = 'Удалить идею';
-                delBtn.textContent = '×';
-                delBtn.addEventListener('click', (e) => {
+                const del = document.createElement('button');
+                del.type = 'button';
+                del.className = 'delete-card-btn';
+                del.textContent = '×';
+                del.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    deleteIdea(project.id);
+                    if (!confirm('Удалить эту идею?')) return;
+                    save(load().filter(x => x.id !== p.id));
+                    render();
                 });
 
-                const topWrap = document.createElement('div');
-
-                const header = document.createElement('div');
-                header.className = 'card-header';
+                const top = document.createElement('div');
+                const head = document.createElement('div');
+                head.className = 'card-header';
 
                 const tag = document.createElement('span');
                 tag.className = 'card-tag';
-                tag.textContent = project.tagLabel || CATEGORY_LABELS[project.category] || 'IDEA';
+                tag.textContent = TAGS[p.category] || 'IDEA';
 
                 const icon = document.createElement('div');
                 icon.className = 'card-icon';
-                icon.textContent = project.icon || '💡';
-
-                header.append(tag, icon);
+                icon.textContent = p.icon;
 
                 const title = document.createElement('h3');
                 title.className = 'card-title';
-                title.textContent = project.title;
+                title.textContent = p.title;
 
                 const desc = document.createElement('p');
                 desc.className = 'card-desc';
-                desc.textContent = project.shortDesc;
+                desc.textContent = p.shortDesc;
 
-                topWrap.append(header, title, desc);
+                const foot = document.createElement('div');
+                foot.className = 'card-footer';
+                foot.innerHTML = `<span class="card-date"></span><span class="card-link-btn">Открыть деталь →</span>`;
+                foot.querySelector('.card-date').textContent = `📅 ${p.date}`;
 
-                const footer = document.createElement('div');
-                footer.className = 'card-footer';
-
-                const date = document.createElement('span');
-                date.className = 'card-date';
-                date.textContent = `📅 ${project.date}`;
-
-                const actionLabel = document.createElement('span');
-                actionLabel.className = 'card-link-btn';
-                actionLabel.textContent = 'Открыть деталь →';
-
-                footer.append(date, actionLabel);
-                card.append(delBtn, topWrap, footer);
-
+                head.append(tag, icon);
+                top.append(head, title, desc);
+                card.append(del, top, foot);
                 return card;
             }
 
-            function renderProjects() {
-                gridEl.innerHTML = '';
-                const projects = loadProjects();
-                const filtered = currentFilter === 'all'
-                    ? projects
-                    : projects.filter(p => p.category === currentFilter);
-
-                if (filtered.length === 0) {
-                    const emptyBox = document.createElement('div');
-                    emptyBox.className = 'empty-state';
-                    emptyBox.textContent = currentFilter === 'all'
-                        ? 'В каталоге пока нет ни одной идеи. Нажмите «+ Добавить идею», чтобы создать первую карточку! ✏️'
-                        : 'В этой категории пока пусто. Нажмите «+ Добавить идею», чтобы пополнить раздел! 💡';
-                    gridEl.appendChild(emptyBox);
+            function render() {
+                grid.innerHTML = '';
+                const list = load().filter(p => filter === 'all' || p.category === filter);
+                if (!list.length) {
+                    grid.innerHTML = `<div class="empty-state">${filter === 'all' ? 'Каталог пуст. Нажмите «+ Добавить идею», чтобы создать первую карточку! ✏️' : 'В этой категории пока пусто. 💡'}</div>`;
                     return;
                 }
-
-                const fragment = document.createDocumentFragment();
-                filtered.forEach(project => fragment.appendChild(createCardElement(project)));
-                gridEl.appendChild(fragment);
+                const frag = document.createDocumentFragment();
+                list.forEach(p => frag.appendChild(makeCard(p)));
+                grid.appendChild(frag);
             }
 
-            filterBarEl.addEventListener('click', (e) => {
+            function openProject(p) {
+                document.getElementById('modalTitle').textContent = p.title;
+                document.getElementById('modalDesc').textContent = p.fullDesc || p.shortDesc;
+
+                const frame = document.getElementById('modalFrame');
+                const img = document.getElementById('modalImg');
+                const ph = document.getElementById('modalPlaceholder');
+                applyShape(frame, p.shape || 'landscape');
+
+                if (p.photo) {
+                    img.src = p.photo;
+                    img.style.display = 'block';
+                    ph.style.display = 'none';
+                } else {
+                    img.style.display = 'none';
+                    ph.style.display = 'block';
+                    document.getElementById('modalIcon').textContent = p.icon;
+                    document.getElementById('modalSchemaTitle').textContent = `${p.title.toUpperCase()} SCHEMA`;
+                }
+
+                const linkWrap = document.getElementById('modalLinkWrapper');
+                const linkEl = document.getElementById('modalLink');
+                const validLink = p.link && /^https?:\/\//i.test(p.link);
+                linkWrap.style.display = validLink ? 'block' : 'none';
+                if (validLink) linkEl.href = p.link;
+
+                projectModal.classList.add('active');
+            }
+
+            filterBar.addEventListener('click', (e) => {
                 const btn = e.target.closest('.filter-btn');
                 if (!btn) return;
-
-                currentFilter = btn.dataset.category;
-                filterBarEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderProjects();
+                filter = btn.dataset.category;
+                filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b === btn));
+                render();
             });
 
-            function openProjectModal(project) {
-                document.getElementById('modalTitle').textContent = project.title;
-                document.getElementById('modalDesc').textContent = project.fullDesc || project.shortDesc;
-
-                const previewImg = document.getElementById('modalPreviewImg');
-                const previewPlaceholder = document.getElementById('modalPreviewPlaceholder');
-
-                if (project.schemaImage) {
-                    previewImg.src = project.schemaImage;
-                    previewImg.style.display = 'block';
-                    previewPlaceholder.style.display = 'none';
-                } else {
-                    previewImg.removeAttribute('src');
-                    previewImg.style.display = 'none';
-                    previewPlaceholder.style.display = 'flex';
-                    document.getElementById('modalPreviewIcon').textContent = project.icon || '💡';
-                    document.getElementById('modalPreviewTitle').textContent = `${project.title.toUpperCase()} SCHEMA`;
-                }
-
-                const linkWrapper = document.getElementById('modalLinkWrapper');
-                const linkEl = document.getElementById('modalLink');
-
-                if (project.link && /^https?:\/\//i.test(project.link)) {
-                    linkWrapper.style.display = 'block';
-                    linkEl.href = project.link;
-                } else {
-                    linkWrapper.style.display = 'none';
-                }
-
-                projectModalEl.classList.add('active');
-            }
-
             document.getElementById('openAddBtn').addEventListener('click', () => {
-                addIdeaModalEl.classList.add('active');
+                addModal.classList.add('active');
                 document.getElementById('ideaTitle').focus();
             });
 
-            document.querySelectorAll('[data-close]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.getElementById(btn.dataset.close).classList.remove('active');
-                });
+            document.querySelectorAll('[data-close]').forEach(b => {
+                b.addEventListener('click', () => document.getElementById(b.dataset.close).classList.remove('active'));
             });
 
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    e.target.classList.remove('active');
-                }
-            });
+            window.addEventListener('click', (e) => { if (e.target.classList.contains('modal')) e.target.classList.remove('active'); });
+            window.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active')); });
 
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
-                }
-            });
-
-            addIdeaFormEl.addEventListener('submit', (e) => {
+            form.addEventListener('submit', (e) => {
                 e.preventDefault();
-
                 const title = document.getElementById('ideaTitle').value.trim();
                 const shortDesc = document.getElementById('ideaShortDesc').value.trim();
                 if (!title || !shortDesc) return;
 
-                const category = document.getElementById('ideaCategory').value;
-                const newProject = {
-                    id: `idea-${Date.now()}`,
+                const item = {
+                    id: Date.now().toString(),
                     title,
-                    category,
-                    tagLabel: CATEGORY_LABELS[category] || category.toUpperCase(),
-                    icon: document.getElementById('ideaIcon').value.trim() || '💡',
+                    category: document.getElementById('ideaCategory').value,
+                    icon: iconInput.value.trim() || '💡',
+                    date: document.getElementById('ideaDate').value.trim() || 'Ноя 2026',
                     shortDesc,
                     fullDesc: document.getElementById('ideaFullDesc').value.trim() || shortDesc,
-                    date: document.getElementById('ideaDate').value.trim() || 'Ноя 2026',
                     link: document.getElementById('ideaLink').value.trim(),
-                    schemaImage: uploadedSchemaDataUrl
+                    photo: photoData,
+                    shape
                 };
 
-                const projects = loadProjects();
-                projects.unshift(newProject);
-                if (!saveProjects(projects)) return;
+                const list = load();
+                list.unshift(item);
+                if (!save(list)) return;
 
-                addIdeaFormEl.reset();
-                ideaIconInputEl.value = '🚀';
+                form.reset();
+                iconInput.value = '🚀';
                 document.getElementById('ideaDate').value = 'Ноя 2026';
-                uploadedSchemaDataUrl = '';
-                schemaFileNameEl.textContent = 'Файл не выбран';
-                clearSchemaBtnEl.style.display = 'none';
-                emojiPickerEl.querySelectorAll('.emoji-chip').forEach((c, idx) => {
-                    c.classList.toggle('selected', idx === 0);
-                });
-
-                addIdeaModalEl.classList.remove('active');
-                renderProjects();
+                document.querySelectorAll('.emoji-chip').forEach((c, i) => c.classList.toggle('selected', i === 0));
+                shape = 'landscape';
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('active', b.dataset.shape === 'landscape'));
+                applyShape(formFrame, 'landscape');
+                setFormPhoto('');
+                addModal.classList.remove('active');
+                render();
             });
 
-            function deleteIdea(id) {
-                if (!confirm('Удалить эту идею из каталога?')) return;
-                const updated = loadProjects().filter(p => p.id !== id);
-                saveProjects(updated);
-                renderProjects();
-            }
-
-            renderProjects();
+            render();
         })();
     </script>
 </body>
 </html>
-
-```
